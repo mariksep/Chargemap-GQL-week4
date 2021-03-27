@@ -6,11 +6,7 @@ const app = express();
 const db = require("./db");
 app.use(express.urlencoded({ extended: false }));
 
-app.use("/cat", require("./routes"));
-app.get("/", (req, res) => {
-  console.log("get /");
-  res.send("Hello to demo node and mongo, try /cat route 😉");
-});
+app.use("/stations", require("./routes"));
 
 db.on("connected", () => {
   app.listen(3000, () => {
