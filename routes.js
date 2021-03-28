@@ -8,8 +8,10 @@ require("./Models/currentTypeModel");
 
 /*GET ONE  STATIONS DATA*/
 router.get("/:id", async (req, res) => {
+  console.log(req.params.id);
+  const onestationId = await req.params.id;
   try {
-    const data = await station.findById(req.params.id).populate({
+    const data = await station.findById(onestationId).populate({
       path: "Connections",
       populate: [
         {
@@ -26,7 +28,6 @@ router.get("/:id", async (req, res) => {
     res.json(data);
   } catch (error) {
     console.error(error);
-    s;
   }
 });
 /*GET 5 STATIONS DATA*/
@@ -91,20 +92,27 @@ router.get("/", async (req, res) => {
 });
 /*POST STATIONS CONNECTIONS*/
 router.post("/", async (req, res) => {
-  console.log(req.body.Connections);
   const data = await req.body.Connections;
   try {
-    const responseConnection = await data.map(async (newConnections) => {
-      const newConnection = new connection(newConnections);
-      await newConnection.save();
-      return newConnection._id;
+    const responseConnection = await Promise.all(
+      data.map(async (newConnections) => {
+        const newConnection = new connection(newConnections);
+        const resforCon = await connection.create(newConnection);
+        await resforCon.save();
+        return resforCon;
+      })
+    );
+    const stationsNew = await new station({
+      ...req.body.Station,
+      Connections: responseConnection,
     });
 
-    const stationsNew = new station({
-      ...req.body.Station,
-      Connections: resCon,
-    });
+    await station.create(stationsNew);
     await stationsNew.save();
+
+    res.send(
+      `NEW station Added  ${stationsNew} created with id: ${stationsNew._id}`
+    );
   } catch (error) {
     console.error(error);
   }
@@ -113,40 +121,60 @@ router.post("/", async (req, res) => {
 router.put("/", async (req, res) => {
   try {
     const { Station, Connections } = await req.body;
-    console.log(Station);
-    const updateSation = await station.findByIdAndUpdate(Station._id, Station, {
-      new: true,
-    });
+
+    const stationUpdateData = await station.findByIdAndUpdate(
+      Station._id,
+      Station,
+      {
+        new: true,
+        upsert: true,
+      }
+    );
     const updatedConnections = await Promise.all(
-      Connections.map(async (newConnection) => {
+      Connections.map(async (newConnections) => {
+        console.log("new", newConnections);
         try {
-          const responseConnection = await connection.findByIdAndUpdate(
-            newConnection._Id,
-            newConnection
+          const data = await connection.findByIdAndUpdate(
+            newConnections._id,
+            newConnections,
+            {
+              new: true,
+              upsert: true,
+            }
           );
-          return responseConnection._Id;
+          console.log("data", data);
+          return data;
         } catch (error) {
           console.log(error.message);
         }
       })
     );
-    updateSation.Connections = updatedConnections;
-    await updateSation.save();
-    const populate = await document.populate("Connections").execPopulate();
-    res.send(updateSation);
+    stationUpdateData.Connections = updatedConnections;
+
+    await stationUpdateData.save();
+
+    const populate = await stationUpdateData
+      .populate("Connections")
+      .execPopulate();
+    const dataforres = { Station, Connections };
+    console.log(dataforres);
+    res.status(200).json(dataforres);
   } catch (error) {
-    console.error(error);
+    res.status(500).json({ error: error.message });
   }
 });
 
 /*DELETE*/
 router.delete("/:id", async (req, res) => {
-  try {
-    await station.findByIdAndDelete(req.params.id);
-    res.send({ message: `Station ${id} is deleted!` });
-  } catch (error) {
-    res.send({ error: error.message });
-  }
+  const deleteID = await req.params.id;
+  await station.findByIdAndDelete(deleteID, (err, docs) => {
+    if (err) {
+      console.log(err);
+    } else {
+      console.log("Deleted : ", docs);
+    }
+  });
+  res.send(`Station ${id} is deleted!`);
 });
 
 module.exports = router;

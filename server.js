@@ -4,7 +4,9 @@ require("dotenv").config();
 const express = require("express");
 const app = express();
 const db = require("./db");
+
 app.use(express.urlencoded({ extended: false }));
+app.use(express.json());
 
 app.use("/stations", require("./routes"));
 

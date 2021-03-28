@@ -4,11 +4,11 @@ const Schema = mongoose.Schema;
 
 const stationsSchema = new Schema({
   id: String,
-  title: String,
-  town: String,
-  address: String,
-  stateorprovince: String,
-  postcode: Number,
+  Title: String,
+  Town: String,
+  AddressLine1: String,
+  StateOrProvince: String,
+  Postcode: Number,
   Location: {
     type: {
       type: String,

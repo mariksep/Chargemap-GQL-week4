@@ -1,7 +1,6 @@
 const mongoose = require("mongoose");
 
 const connectionsSchema = new mongoose.Schema({
-  Quantity: Number,
   ConnectionTypeID: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "ConnectionType",
@@ -14,6 +13,7 @@ const connectionsSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "Level",
   },
+  Quantity: Number,
 });
 
 module.exports = mongoose.model("Connections", connectionsSchema);
