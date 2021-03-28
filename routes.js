@@ -2,7 +2,7 @@ const router = require("express").Router();
 const station = require("./Models/modelStation");
 const connectionType = require("./Models/modelConnectionType");
 const connection = require("./Models/connectionModel");
-const rectangleBounds = require("./rectangleBound");
+const rectangleBound = require("./rectangleBound");
 require("./Models/levelTypeModel");
 require("./Models/currentTypeModel");
 
@@ -33,12 +33,9 @@ router.get("/:id", async (req, res) => {
 /*GET 5 STATIONS DATA*/
 router.get("/", async (req, res) => {
   let data;
-  const { topRight, bottomLeft, limit } = req.query;
-  console.log(req.query);
-
-  console.log(req.query);
+  const { limit, topRight, bottomLeft } = req.query;
   if (topRight && bottomLeft) {
-    const certainArea = rectangleBounds.rectangleBounds(
+    const certainArea = await rectangleBound.rectangleBounds(
       JSON.parse(topRight),
       JSON.parse(bottomLeft)
     );
@@ -46,6 +43,7 @@ router.get("/", async (req, res) => {
       data = await station
         .find()
         .limit(limit ? Number(limit) : 5)
+        .where("Location")
         .within(certainArea)
         .populate({
           path: "Connections",

@@ -11,4 +11,6 @@ const rectangleBounds = (topRight, bottomLeft) => ({
   ],
 });
 
-module.export = { rectangleBounds };
+module.exports = {
+  rectangleBounds,
+};

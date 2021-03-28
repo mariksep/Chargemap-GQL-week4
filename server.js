@@ -12,7 +12,7 @@ app.use("/stations", require("./routes"));
 
 app.get("/", (req, res) => {
   console.log("get /");
-  res.send("Hello to demo node and mongo, try /cat route 😉");
+  res.send("Hello to demo node and mongo, try /station route 🔋 🔌 🚗");
 });
 
 db.on("connected", () => {
