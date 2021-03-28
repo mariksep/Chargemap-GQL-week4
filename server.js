@@ -8,6 +8,11 @@ app.use(express.urlencoded({ extended: false }));
 
 app.use("/stations", require("./routes"));
 
+app.get("/", (req, res) => {
+  console.log("get /");
+  res.send("Hello to demo node and mongo, try /cat route 😉");
+});
+
 db.on("connected", () => {
   app.listen(3000, () => {
     console.log("express server started on port 3000");
