@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 
 const levelTypeSchema = new mongoose.Schema({
   id: String,
@@ -7,4 +7,4 @@ const levelTypeSchema = new mongoose.Schema({
   IsFastChargeCapable: Boolean,
 });
 
-module.exports = mongoose.model("Level", levelTypeSchema);
+export default mongoose.model("Level", levelTypeSchema);

@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 
 const currentTypeSchema = new mongoose.Schema({
   id: String,
@@ -6,4 +6,4 @@ const currentTypeSchema = new mongoose.Schema({
   Title: String,
 });
 
-module.exports = mongoose.model("CurrentType", currentTypeSchema);
+export default mongoose.model("CurrentType", currentTypeSchema);

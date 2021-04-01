@@ -1,4 +1,4 @@
-const rectangleBounds = (topRight, bottomLeft) => ({
+const rectangelBounds = (topRight, bottomLeft) => ({
   type: "Polygon",
   coordinates: [
     [
@@ -11,6 +11,4 @@ const rectangleBounds = (topRight, bottomLeft) => ({
   ],
 });
 
-module.exports = {
-  rectangleBounds,
-};
+export { rectangelBounds };
