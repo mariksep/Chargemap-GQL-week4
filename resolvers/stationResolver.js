@@ -1,7 +1,8 @@
 import Station from "../Models/modelStation.js";
 import connection from "../Models/connectionModel.js";
-import { UserInputError } from "apollo-server-errors";
+
 import { rectangelBounds } from "../rectangleBound.js";
+import { AuthenticationError, UserInputError } from "apollo-server-errors";
 
 export default {
   Query: {
@@ -33,8 +34,11 @@ export default {
     },
   },
   Mutation: {
-    addStation: async (parents, args) => {
+    addStation: async (parents, args, context) => {
       try {
+        const { user } = context;
+
+        if (!user) throw new AuthenticationError("Not authenticated!");
         const { Connections, ...data } = args;
 
         const addConnections = await Promise.all(
