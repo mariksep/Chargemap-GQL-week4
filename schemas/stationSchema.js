@@ -57,6 +57,6 @@ export default gql`
       StateOrProvince: String
       Town: String
     ): Station
-    deleteStation(id: ID): ID
+    deleteStation(id: ID!): ID
   }
 `;

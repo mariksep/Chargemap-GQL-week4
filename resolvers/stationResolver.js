@@ -108,12 +108,16 @@ export default {
         );
       }
     },
-    deleteStation: async (_, args) => {
+    deleteStation: async (parent, args, { user }, info) => {
       try {
-        const { id } = args;
-
+        const id = args.id;
+        console.log("delete", args);
+        if (!user) {
+          throw new AuthenticationError(
+            "You are not authenticated to delete station"
+          );
+        }
         await Station.findByIdAndDelete(id);
-
         return id;
       } catch (error) {
         throw new UserInputError(

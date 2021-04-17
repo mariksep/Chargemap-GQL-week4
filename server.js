@@ -32,9 +32,9 @@ dotenv.config();
     });
 
     const app = express();
-    app.use(helmet());
+    app.use(helmet({ contentSecurityPolicy: false }));
 
-    server.applyMiddleware({ app });
+    server.applyMiddleware({ app, path: "/graphql" });
 
     process.env.NODE_ENV = process.env.NODE_ENV || "development";
     if (process.env.NODE_ENV === "production") {

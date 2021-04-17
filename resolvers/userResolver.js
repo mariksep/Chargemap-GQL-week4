@@ -23,14 +23,16 @@ export default {
     },
   },
   Mutation: {
-    register: async (_, args) => {
+    register: async (parent, args) => {
       try {
-        const { username, password } = args;
-
         const hashedPassword = await bcrypt.hash(password, 12);
-        const newUser = new User({ username, password: hashedPassword });
-
-        return newUser.save();
+        const userWithHash = {
+          ...args,
+          password: hashedPassword,
+        };
+        const newUser = new User(userWithHash);
+        const result = await newUser.save();
+        return result;
       } catch (error) {
         throw new UserInputError(
           `Error while creating an account: ${error.message}`
